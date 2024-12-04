@@ -56,3 +56,13 @@
         }
         return $mensaje;
     }
+
+    function validaORedireccionar(string $url){
+        //Validar la URL por  ID válido
+        $id=$_GET['id'];
+        $id=filter_var($id,FILTER_VALIDATE_INT);
+        if (!$id){
+            header("Location:{$url}");
+        }
+        return $id;
+    }

@@ -11,7 +11,7 @@
             $propiedades=Propiedad::all();
             //Muestra mensaje condicional
             $resultado=$_GET['resultado'] ?? null;
-            
+
             $router->render('propiedades/admin',[
                 'propiedades'=>$propiedades,
                 'resultado'=>$resultado
@@ -73,8 +73,65 @@
                 'errores'=>$errores
            ]);
         }
-        public static function actualizar(){
-            echo "Actualizar Propiedad";
+        public static function actualizar(Router $router){
+            $id=validaORedireccionar('/admin');
+            // Obtener los datos de la propiedad
+            $propiedad=Propiedad::find($id);
+            $vendedores=Vendedor::all();
+             // Arreglo con mensaje de errores
+            $errores=Propiedad::getErrores();
+            //Método POST para actualizar
+            if ($_SERVER['REQUEST_METHOD']==='POST'){
+        
+                //Asignar los atributos
+                $args=$_POST['propiedad'];
+                $propiedad->sincronizar($args);
+        
+                // Validación
+                $errores=$propiedad->validar();
+        
+                // Subida de archivo
+                //Generar un nombre único
+                $nombreImagen=md5(uniqid(rand(),true)).".jpg";
+                if ($_FILES['propiedad']['tmp_name']['imagen']){
+                    $image=Image::make($_FILES['propiedad']['tmp_name']['imagen'])->fit(800,600);
+                    $propiedad->setImagen($nombreImagen);
+                }
+                
+            
+                // Revisar que el array de errores esté vacío
+                if (empty($errores)){
+                    if ($_FILES['propiedad']['tmp_name']['imagen']){
+                         // Almacenar la imagen
+                        $image->save(CARPETA_IMAGENES.$nombreImagen);
+                    }
+                   
+                   $propiedad->guardar();
+                   
+                }
+                
+            }
+            
+            $router->render('propiedades/actualizar',[
+                'propiedad'=>$propiedad,
+                'errores'=>$errores,
+                'vendedores'=>$vendedores
+            ]);
+        }
+        public static function eliminar(){
+            if($_SERVER['REQUEST_METHOD']==='POST'){
+                $id=$_POST['id'];
+                $id=filter_var($id,FILTER_VALIDATE_INT);
+                if ($id){
+                    $tipo=$_POST['tipo'];
+                    if (validarTipoContenido($tipo)){
+                        $propiedad=Propiedad::find($id);
+                        $propiedad->eliminar();                       
+                    }
+                    
+                   
+                }
+            }
         }
         
     }
