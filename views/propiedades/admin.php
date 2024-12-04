@@ -10,7 +10,7 @@
             <?php } ?>
     
         <a href="/propiedades/crear" class="boton boton-verde">Nueva Propiedad</a>
-        <a href="/admin/vendedores/crear" class="boton boton-amarillo">Nuevo Vendedor(a)</a>
+        <a href="/vendedores/crear" class="boton boton-amarillo">Nuevo Vendedor(a)</a>
         <h2>Propiedades</h2>
         <table class="propiedades">
             <thead>
