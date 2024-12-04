@@ -9,6 +9,20 @@
         public static function crear(Router $router){
             $errores=Vendedor::getErrores();
             $vendedor=new Vendedor;
+            if ($_SERVER['REQUEST_METHOD']==='POST'){
+
+                // Crear una nueva instancia
+                $vendedor=new Vendedor($_POST['vendedor']);
+                //Validar que no haya campos vacíos
+                $errores=$vendedor->validar();
+                // No hay errores
+                if (empty($errores)){
+                    $vendedor->guardar();
+                }
+        
+        
+        
+            }
             $router->render('vendedores/crear',[
                 'errores'=>$errores,
                 'vendedor'=>$vendedor
